@@ -1,3 +1,7 @@
+using EC2_Test.Server.Middlewares;
+using EC2Models.Models;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//TODO - Ajoutes la configuration de la base de données
+builder.Services.AddDbContext<EC2Context>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EC2_TestContext")));
 
 var app = builder.Build();
 
@@ -18,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
